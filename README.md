@@ -8,10 +8,53 @@ At the moment the tool only works with product related data (collections, pages 
 * Sync product data between shops (power-editor data, product titles and descriptions)
 * Bulk editing (e.g. translating into another language) of this data
 
+## Usage
+You need to set up a private app for the shopify store you want to use this tool with. See [this part of the Shopify docs](https://help.shopify.com/api/getting-started/authentication/private-authentication#generate-credentials-from-the-shopify-admin) for a short how to.
+You need to provde the `powereditor_cli` with the key and password you obtained that way, alongside with your store name. You can do this via command line options but the easiest way is to use a `config.yml` file
+
+`config.yml`
+
+```yaml
+export:
+  key: iiiiiiiiii
+  password: jjjjjjjjjj
+  store: my-first-store
+  namespace: power-editor
+
+import:
+  key: xxxxxxxxxx
+  password: yyyyyyyyyyyy
+  store: my-other-store
+  namespace: test
+```
+
+put this file in an empty folder and `cd` into it. Then run the tool from the command line
+
+### Export data
+
+```
+powereditor_cli collection export 12345678
+```
+Replace 12345678 above with the ID of the collection you'd like to export.
+This will export the data to `output.json` within the same folder.
+
+### Import data
+
+```
+powereditor_cli import output.json 
+```
+
+## More options
+
+For more options see
+
+```
+powereditor-cli help export collection
+powereditor-cli help import
+```
 
 ## Example of exported data
 
-tha data is exported in JSON
 
 ```json
 {
