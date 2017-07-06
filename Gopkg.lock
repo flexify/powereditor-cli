@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/dommmel/goshopping"
   packages = ["shopify"]
-  revision = "33f92043e90040aa470de2de29e8549ab15b7d0c"
+  revision = "3a0b505e9f030df151b26ed9d2cdac9479700752"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -113,7 +113,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "0e0164865330d5cf1c00247be08330bf96e2f87c"
+  revision = "6faef541c73732f438fb660a212750a9ba9f9362"
 
 [[projects]]
   branch = "master"

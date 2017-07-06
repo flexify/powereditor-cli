@@ -91,7 +91,10 @@ var collectionCmd = &cobra.Command{
 
 			metafields, _ := GetMetafieldsByProduct(*product.Id, viper.GetString("export.namespace"), client)
 
-			if len(metafields) > 0 {
+			// Add this product if it has metafields that should be exported or if the default product information should be included
+			exportThisProduct := len(metafields) > 0 || viper.GetBool("export.include-product-info")
+
+			if exportThisProduct {
 				outputFields := GenerateProductDataOutput(metafields)
 
 				// Fill in the output data
@@ -170,7 +173,9 @@ func GetProductsByCollection(collectionId int, client *shopify.Client) ([]*shopi
 		Fields:       productFields,
 		CollectionId: collectionId,
 	}
-	products, _, err := client.Products.List(ctx, opt)
+
+	products, err := client.Products.AutoPagingList(ctx, opt)
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Products.List() returned error: %v", err)
 		return nil, err
