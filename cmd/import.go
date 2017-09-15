@@ -92,14 +92,23 @@ var importCmd = &cobra.Command{
 				// Get the key (handle or title) as string
 				f := reflect.ValueOf(p).Elem().FieldByName(strings.Title(key))
 				keyValue := reflect.Indirect(f).String()
-				productId, _ = getProductIdByProperty(key, keyValue, client)
+
+				var noproducterr error
+				productId, noproducterr = getProductIdByProperty(key, keyValue, client)
+
+				if noproducterr != nil {
+					fmt.Printf("Skipping %s:%s", key, keyValue)
+					continue
+				}
+
 				fmt.Printf("%s: %s => id: %d\n", key, keyValue, *productId)
+
 			} else {
 				productId = p.Id
 			}
 
 			debug("Product id: %d", *productId)
-
+			// debug("Body: %s", *p.BodyHtml)
 			updatedProduct := &shopify.Product{
 				Id: productId,
 				// Handle:     p.Handle,
@@ -108,7 +117,8 @@ var importCmd = &cobra.Command{
 				Metafields: AssembleMetafieldData(p.Fields, client),
 			}
 
-			_, err := client.Products.Edit(context.Background(), updatedProduct)
+			resp, err := client.Products.Edit(context.Background(), updatedProduct)
+			debug("resp %s", resp)
 			if err != nil {
 				fmt.Errorf("%s", err)
 			}
@@ -127,12 +137,14 @@ func AssembleMetafieldData(fields []*OutputField, client *shopify.Client) (metaf
 		}
 		metafieldValue := strings.Join(rowsToMerge, rowSeparator)
 
+		valueType := "string"
 		ns := viper.GetString("import.namespace")
 		out := &shopify.Metafield{
 			Namespace: &ns,
 			Key:       field.Key,
 			Id:        field.Id,
 			Value:     &metafieldValue,
+			ValueType: &valueType,
 		}
 
 		metafields = append(metafields, out)
@@ -155,6 +167,9 @@ func getProductIdByProperty(propertyName string, propertyValue string, client *s
 	}
 	if len(products) > 1 {
 		return nil, fmt.Errorf("Found more than on product for %s '%s': %s'", propertyName, propertyValue, err)
+	}
+	if len(products) == 0 {
+		return nil, fmt.Errorf("Found no product  '%s': %s'", propertyName, propertyValue, err)
 	}
 	//spew.Dump(products[0])
 	return products[0].Id, nil

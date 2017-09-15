@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/dommmel/goshopping/shopify"
 	"github.com/spf13/cobra"
@@ -110,9 +111,17 @@ func GetClient() *shopify.Client {
 }
 
 func getSliceOfMapValue(m map[string]string) []string {
+	// Preserve Order of map entries
+	// See: https://blog.golang.org/go-maps-in-action#TOC_7.
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
 	var v []string
-	for _, value := range m {
-		v = append(v, value)
+
+	for _, k := range keys {
+		v = append(v, m[k])
 	}
 	return v
 }

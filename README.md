@@ -33,7 +33,7 @@ put this file in an empty folder and `cd` into it. Then run the tool from the co
 ### Export data
 
 ```
-powereditor_cli collection export 12345678
+powereditor_cli export collection 12345678
 ```
 Replace 12345678 above with the ID of the collection you'd like to export.
 This will export the data to `output.json` within the same folder.
