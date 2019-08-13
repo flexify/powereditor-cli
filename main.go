@@ -20,7 +20,7 @@
 
 package main
 
-import "github.com/dommmel/powereditor-cli/cmd"
+import "github.com/flexify/powereditor-cli/cmd"
 
 func main() {
 	cmd.Execute()

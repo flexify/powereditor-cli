@@ -166,7 +166,7 @@ func GetProductsByCollection(collectionId int, client *shopify.Client) ([]*shopi
 	productFields := []string{"id", "handle"}
 	if viper.GetBool("export.include-product-info") {
 		productFields = append(productFields, "body_html", "title")
-		debug("Export fields: %s", productFields)
+		// debug("Export fields: %s", productFields)
 	}
 
 	opt := &shopify.ProductListOptions{

@@ -107,7 +107,7 @@ var importCmd = &cobra.Command{
 				productId = p.Id
 			}
 
-			debug("Product id: %d", *productId)
+			// debug("Product id: %d", *productId)
 			// debug("Body: %s", *p.BodyHtml)
 			updatedProduct := &shopify.Product{
 				Id: productId,
@@ -117,8 +117,8 @@ var importCmd = &cobra.Command{
 				Metafields: AssembleMetafieldData(p.Fields, client),
 			}
 
-			resp, err := client.Products.Edit(context.Background(), updatedProduct)
-			debug("resp %s", resp)
+			_, err := client.Products.Edit(context.Background(), updatedProduct)
+			// debug("resp %s", resp)
 			if err != nil {
 				fmt.Errorf("%s", err)
 			}

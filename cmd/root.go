@@ -28,7 +28,6 @@ import (
 	"github.com/dommmel/goshopping/shopify"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	. "github.com/tj/go-debug"
 )
 
 const rowSeparator string = "<!--|row|-->"
@@ -36,7 +35,8 @@ const colSeparator string = "<!--|col|-->"
 
 // init global flags
 var cfgFile, outputFile string
-var debug = Debug("cli")
+
+//var debug = Debug("cli")
 
 var RootCmd = &cobra.Command{
 	Use:   "powereditor-cli",
