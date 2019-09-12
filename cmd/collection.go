@@ -95,15 +95,18 @@ var collectionCmd = &cobra.Command{
 			exportThisProduct := len(metafields) > 0 || viper.GetBool("export.include-product-info")
 
 			if exportThisProduct {
+				globalTitleTag, globalDescriptionTag := getSeoTagsByProduct(*product.Id, client)
 				outputFields := GenerateProductDataOutput(metafields)
 
 				// Fill in the output data
 				pout := &ProductOutput{
-					Id:       product.Id,
-					Handle:   product.Handle,
-					Title:    product.Title,
-					BodyHtml: product.BodyHtml,
-					Fields:   outputFields,
+					Id:                             product.Id,
+					Handle:                         product.Handle,
+					Title:                          product.Title,
+					MetafieldsGlobalTitleTag:       globalTitleTag,
+					MetafieldsGlobalDescriptionTag: globalDescriptionTag,
+					BodyHtml:                       product.BodyHtml,
+					Fields:                         outputFields,
 				}
 				output.Products = append(output.Products, pout)
 			}
@@ -219,4 +222,17 @@ func GenerateProductDataOutput(fields []*shopify.Metafield) (data []*OutputField
 		data = append(data, out)
 	}
 	return
+}
+
+func getSeoTagsByProduct(productID int, client *shopify.Client) (globalTitleTag *string, globalDescriptionTag *string) {
+	globalMetafields, _ := GetMetafieldsByProduct(productID, "global", client)
+	for _, field := range globalMetafields {
+		if *field.Key == "title_tag" {
+			globalTitleTag = field.Value
+		}
+		if *field.Key == "description_tag" {
+			globalDescriptionTag = field.Value
+		}
+	}
+	return globalTitleTag, globalDescriptionTag
 }

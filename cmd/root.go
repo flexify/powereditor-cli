@@ -139,9 +139,11 @@ type OutputField struct {
 }
 
 type ProductOutput struct {
-	Id       *int           `json:"id"`
-	Handle   *string        `json:"handle"`
-	BodyHtml *string        `json:"body_html,omitempty"`
-	Title    *string        `json:"title,omitempty"`
-	Fields   []*OutputField `json:"fields,omitempty"`
+	Id                             *int           `json:"id"`
+	Handle                         *string        `json:"handle"`
+	BodyHtml                       *string        `json:"body_html,omitempty"`
+	Title                          *string        `json:"title,omitempty"`
+	MetafieldsGlobalTitleTag       *string        `json:"metafields_global_title_tag,omitempty"`
+	MetafieldsGlobalDescriptionTag *string        `json:"metafields_global_description_tag,omitempty"`
+	Fields                         []*OutputField `json:"fields,omitempty"`
 }
