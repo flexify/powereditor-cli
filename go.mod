@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/caarlos0/spin v1.1.0
 	github.com/davecgh/go-spew v1.1.1
-	github.com/dommmel/goshopping v0.0.1
+	github.com/dommmel/goshopping v0.0.2
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect

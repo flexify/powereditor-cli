@@ -107,6 +107,10 @@ var importCmd = &cobra.Command{
 				productId = p.Id
 			}
 
+			// Delete all metafields first because Shopify throws an error when creating a metafield
+			// with an existing key. It *should* just update it imho, but hey...
+			DeleteAllMetafields(*productId, client)
+
 			// debug("Product id: %d", *productId)
 			// debug("Body: %s", *p.BodyHtml)
 			updatedProduct := &shopify.Product{
@@ -125,6 +129,18 @@ var importCmd = &cobra.Command{
 			s.Stop()
 		}
 	},
+}
+
+// DeleteAllMetafields deletes all metafields in the power-editor namespace
+func DeleteAllMetafields(productID int, client *shopify.Client) {
+	opt := &shopify.MetafieldListOptions{Namespace: viper.GetString("import.namespace")}
+	metafields, _, err := client.Metafields.ListByProduct(context.Background(), productID, opt)
+	if err != nil {
+		fmt.Errorf("%s", err)
+	}
+	for _, m := range metafields {
+		client.Metafields.Delete(context.Background(), *m.Id)
+	}
 }
 
 func AssembleMetafieldData(fields []*OutputField, client *shopify.Client) (metafields []*shopify.Metafield) {
