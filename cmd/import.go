@@ -139,7 +139,11 @@ func DeleteAllMetafields(productID int, client *shopify.Client) {
 		fmt.Errorf("%s", err)
 	}
 	for _, m := range metafields {
-		client.Metafields.Delete(context.Background(), *m.Id)
+		fmt.Printf("delete metafields: %s, %d\n", *m.Key, int64(*m.Id))
+		resp, err := client.Metafields.Delete(context.Background(), *m.Id)
+		if err != nil {
+			fmt.Errorf("%s - %s", err, resp.Body)
+		}
 	}
 }
 
