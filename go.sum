@@ -24,10 +24,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
-github.com/dommmel/goshopping v0.0.2 h1:RVBq2Yts4rsVq1YpL0Ajk6nuBv3zOEXSGqvEoWKWn+k=
-github.com/dommmel/goshopping v0.0.2/go.mod h1:2TSnBW8I88vExeFrtTEqU+wQKDg87NVUhK1jPMhj77M=
-github.com/dommmel/goshopping v0.0.3 h1:hFnx2RiKjtJjaLDQBRVCL1PbGN/qEWeFq2JhTrMUkqc=
-github.com/dommmel/goshopping v0.0.3/go.mod h1:2TSnBW8I88vExeFrtTEqU+wQKDg87NVUhK1jPMhj77M=
+github.com/dommmel/goshopping v0.0.4 h1:rzhJ9PZBtgBYCD7eyen+u03Dlut5wIf87Jq2vjWxz+E=
+github.com/dommmel/goshopping v0.0.4/go.mod h1:2TSnBW8I88vExeFrtTEqU+wQKDg87NVUhK1jPMhj77M=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=

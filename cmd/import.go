@@ -110,11 +110,7 @@ var importCmd = &cobra.Command{
 			// Delete all metafields first because Shopify throws an error when creating a metafield
 			// with an existing key. It *should* just update it imho, but hey...
 			DeleteAllPowereditorMetafields(*productId, client)
-			DeleteSeoMetafields(*productId, p, client)
-
-			seoGlobalMetafields := AssembleSeoMetaFields(p.MetafieldsGlobalTitleTag, p.MetafieldsGlobalDescriptionTag, client)
-			powereditorMetafields := AssembleMetafieldData(p.Fields, client)
-			metafields := append(seoGlobalMetafields, powereditorMetafields...)
+			metafields := AssembleMetafieldData(p.Fields, client)
 
 			// for _, mf := range metafields {
 			// 	fmt.Printf("METAFIELDS: %s, %s\n", *mf.Key, *mf.Namespace)
@@ -125,9 +121,11 @@ var importCmd = &cobra.Command{
 			updatedProduct := &shopify.Product{
 				Id: productId,
 				// Handle:     p.Handle,
-				Title:      p.Title,
-				BodyHtml:   p.BodyHtml,
-				Metafields: metafields,
+				Title:                          p.Title,
+				BodyHtml:                       p.BodyHtml,
+				MetafieldsGlobalTitleTag:       p.MetafieldsGlobalTitleTag,
+				MetafieldsGlobalDescriptionTag: p.MetafieldsGlobalDescriptionTag,
+				Metafields:                     metafields,
 			}
 
 			_, err := client.Products.Edit(context.Background(), updatedProduct)
@@ -138,29 +136,6 @@ var importCmd = &cobra.Command{
 			s.Stop()
 		}
 	},
-}
-
-// DeleteSeoMetafields finds and deletes seo metafeilds if presesnt in the import file
-func DeleteSeoMetafields(productId int, p *ProductOutput, client *shopify.Client) {
-	seoKeys := []string{"title_tag", "description_tag"}
-	importedSeoFields := []*string{p.MetafieldsGlobalTitleTag, p.MetafieldsGlobalDescriptionTag}
-	opt := &shopify.MetafieldListOptions{Namespace: ""}
-	metafields, _, err := client.Metafields.ListByProduct(context.Background(), productId, opt)
-	if err != nil {
-		fmt.Errorf("%s", err)
-	}
-	for _, m := range metafields {
-		for i, seoField := range importedSeoFields {
-			if m.Key == &seoKeys[i] && (seoField != nil && *seoField != "") {
-
-				fmt.Printf("Deleting global SEO metafield: %s\n", *m.Key)
-				resp, err := client.Metafields.Delete(context.Background(), *m.Id)
-				if err != nil {
-					fmt.Errorf("%s - %s", err, resp.Body)
-				}
-			}
-		}
-	}
 }
 
 // DeleteAllPowereditorMetafields deletes all metafields in the power-editor namespace
@@ -177,28 +152,6 @@ func DeleteAllPowereditorMetafields(productID int, client *shopify.Client) {
 			fmt.Errorf("%s - %s", err, resp.Body)
 		}
 	}
-}
-
-// AssembleSeoMetaFields creates a slice of metafields object holding the SEO information
-func AssembleSeoMetaFields(metafieldsGlobalTitleTag *string, metafieldsGlobalDescriptionTag *string, client *shopify.Client) (metafields []*shopify.Metafield) {
-	g := "global"
-	valueType := "string"
-	keys := []string{"title_tag", "description_tag"}
-	fields := []*string{metafieldsGlobalTitleTag, metafieldsGlobalDescriptionTag}
-	for i, fieldValue := range fields {
-		if fieldValue != nil && *fieldValue != "" {
-			description := &shopify.Metafield{
-				Namespace: &g,
-				Key:       &keys[i],
-				Value:     fieldValue,
-				ValueType: &valueType,
-			}
-			fmt.Printf("add SEO metafields: %s - %s: %s\n", keys[i], g, *fieldValue)
-
-			metafields = append(metafields, description)
-		}
-	}
-	return
 }
 
 func AssembleMetafieldData(fields []*OutputField, client *shopify.Client) (metafields []*shopify.Metafield) {
