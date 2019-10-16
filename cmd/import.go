@@ -107,14 +107,25 @@ var importCmd = &cobra.Command{
 				productId = p.Id
 			}
 
+			// Delete all metafields first because Shopify throws an error when creating a metafield
+			// with an existing key. It *should* just update it imho, but hey...
+			DeleteAllPowereditorMetafields(*productId, client)
+			metafields := AssembleMetafieldData(p.Fields, client)
+
+			// for _, mf := range metafields {
+			// 	fmt.Printf("METAFIELDS: %s, %s\n", *mf.Key, *mf.Namespace)
+			// }
+
 			// debug("Product id: %d", *productId)
 			// debug("Body: %s", *p.BodyHtml)
 			updatedProduct := &shopify.Product{
 				Id: productId,
 				// Handle:     p.Handle,
-				Title:      p.Title,
-				BodyHtml:   p.BodyHtml,
-				Metafields: AssembleMetafieldData(p.Fields, client),
+				Title:                          p.Title,
+				BodyHtml:                       p.BodyHtml,
+				MetafieldsGlobalTitleTag:       p.MetafieldsGlobalTitleTag,
+				MetafieldsGlobalDescriptionTag: p.MetafieldsGlobalDescriptionTag,
+				Metafields:                     metafields,
 			}
 
 			_, err := client.Products.Edit(context.Background(), updatedProduct)
@@ -125,6 +136,22 @@ var importCmd = &cobra.Command{
 			s.Stop()
 		}
 	},
+}
+
+// DeleteAllPowereditorMetafields deletes all metafields in the power-editor namespace
+func DeleteAllPowereditorMetafields(productID int, client *shopify.Client) {
+	opt := &shopify.MetafieldListOptions{Namespace: viper.GetString("import.namespace")}
+	metafields, _, err := client.Metafields.ListByProduct(context.Background(), productID, opt)
+	if err != nil {
+		fmt.Errorf("%s", err)
+	}
+	for _, m := range metafields {
+		fmt.Printf("delete metafields: %s, %d\n", *m.Key, int64(*m.Id))
+		resp, err := client.Metafields.Delete(context.Background(), *m.Id)
+		if err != nil {
+			fmt.Errorf("%s - %s", err, resp.Body)
+		}
+	}
 }
 
 func AssembleMetafieldData(fields []*OutputField, client *shopify.Client) (metafields []*shopify.Metafield) {
